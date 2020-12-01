@@ -14,19 +14,21 @@ import {
   IconButtonSideText,
   IconLink,
   PhotoName
-} from '../../components/default'
-import * as S from '../../components/default/page'
+} from '..'
+import * as S from '../page'
 
-// Icons
+// Items
 import {
   SettingsIcon,
   SettingsAdvancedIcon,
   BookmarkBook,
   HistoryIcon
 } from 'brave-ui/components/icons'
+import TogetherTooltip from './togetherTooltip'
+import TogetherIcon from './togetherIcon'
 
 // Helpers
-import { getLocale } from '../../../common/locale'
+import { getLocale } from '../../../../common/locale'
 
 interface Props {
   textDirection: string
@@ -78,6 +80,11 @@ export default class FooterInfo extends React.PureComponent<Props, {}> {
             <IconLink title={getLocale('historyPageTitle')} href='chrome://history'>
               <HistoryIcon />
             </IconLink>
+            <TogetherTooltip>
+              <IconLink title={getLocale('togetherPageTitle')} href='https://together.brave.com/widget'>
+                <TogetherIcon />
+              </IconLink>
+            </TogetherTooltip>
           </Navigation>
         </S.GridItemNavigation>
       </>

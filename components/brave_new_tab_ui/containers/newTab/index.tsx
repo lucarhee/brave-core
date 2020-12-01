@@ -8,7 +8,7 @@ import * as React from 'react'
 // Components
 import Stats from './stats'
 import TopSitesGrid from './gridSites'
-import FooterInfo from './footerInfo'
+import FooterInfo from '../../components/default/footer/footer'
 import SiteRemovalNotification from './notification'
 import {
   ClockWidget as Clock,
