@@ -42,7 +42,7 @@ var packageConfig = function(key){
 
 const getNPMConfig = (key) => {
   if (!NpmConfig) {
-    const list = run(npmCommand, ['config', 'list', '--json'], {cwd: rootDir})
+    const list = run(npmCommand, ['config', 'list', '--json', '--userconfig=' + path.join(rootDir, '.npmrc')])
     NpmConfig = JSON.parse(list.stdout.toString())
   }
 
@@ -353,7 +353,6 @@ Config.prototype.buildArgs = function () {
     args.enable_dsyms = true
     args.enable_stripping = !this.isDebug()
     args.use_xcode_clang = false
-    args.use_xcode_clang = this.isOfficialBuild()
     args.use_clang_coverage = false
     // Component builds are not supported for iOS:
     // https://chromium.googlesource.com/chromium/src/+/master/docs/component_build.md
