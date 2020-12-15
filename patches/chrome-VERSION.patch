@@ -3,10 +3,10 @@ index 554e6d1628c80ac0acca4be1b7b55d57baf3b22f..aea8cf4af375ebed5d340e33b5e575cc
 --- a/chrome/VERSION
 +++ b/chrome/VERSION
 @@ -1,4 +1,4 @@
- MAJOR=88
+ MAJOR=89
 -MINOR=0
--BUILD=4324
--PATCH=51
+-BUILD=4350
+-PATCH=7
 +MINOR=1
 +BUILD=20
 +PATCH=38
