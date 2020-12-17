@@ -1,8 +1,8 @@
 diff --git a/components/content_settings/core/browser/content_settings_pref_provider.cc b/components/content_settings/core/browser/content_settings_pref_provider.cc
-index 9ffac847adcfb667277910430579d007be7cba09..ec4333838b5526350591a98ec92ef91c39ed5ef1 100644
+index a00cacb48f3b91597edc46926bed38f8ed837c35..4c9ea9c7d75e185921b3898a8de033d592187b08 100644
 --- a/components/content_settings/core/browser/content_settings_pref_provider.cc
 +++ b/components/content_settings/core/browser/content_settings_pref_provider.cc
-@@ -197,6 +197,7 @@ bool PrefProvider::SetWebsiteSetting(
+@@ -198,6 +198,7 @@ bool PrefProvider::SetWebsiteSetting(
    // sites/origins defined by the |primary_pattern| and the |secondary_pattern|.
    // Default settings are handled by the |DefaultProvider|.
    if (primary_pattern == ContentSettingsPattern::Wildcard() &&
