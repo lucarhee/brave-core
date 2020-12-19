@@ -4,9 +4,9 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "bat/ads/internal/features/features.h"
-
+#include "bat/ads/internal/features/purchase_intent/purchase_intent_features.h"
+#include "bat/ads/internal/features/text_classification/text_classification_features.h"
 #include "base/metrics/field_trial.h"
-#include "base/metrics/field_trial_params.h"
 #include "base/strings/string_number_conversions.h"
 #include "bat/ads/internal/logging.h"
 
@@ -14,34 +14,25 @@ namespace ads {
 namespace features {
 
 namespace {
-
-const char kPageProbabilitiesStudyName[] = "PageProbabilitiesHistoryStudy";
-
-const int kDefaultHistorySize = 5;
-
+// TODO(Moritz Haller): Better than empty string, maybe optional?
+const char kActiveStudyName[] = "";
 }  // namespace
 
-// Controls behavior of the contextual ad matching mechanism, e.g. by adjusting
-// the number of text classifications used to infer user interest
-const base::Feature kContextualAdsControl { "ContextualAdsControl",
-    base::FEATURE_DISABLED_BY_DEFAULT };
-
-bool IsPageProbabilitiesStudyActive() {
-  if (!base::FieldTrialList::Find(kPageProbabilitiesStudyName)) {
+bool HasActiveStudy() {
+  if (!base::FieldTrialList::Find(kActiveStudyName)) {
     return false;
   }
 
   return true;
 }
 
-std::string GetPageProbabilitiesStudy() {
-  return kPageProbabilitiesStudyName;
+std::string GetStudy() {
+  return kActiveStudyName;
 }
 
-std::string GetPageProbabilitiesFieldTrialGroup() {
+std::string GetGroup() {
   std::string group_name;
-  base::FieldTrial* field_trial = base::FieldTrialList::Find(
-      kPageProbabilitiesStudyName);
+  base::FieldTrial* field_trial = base::FieldTrialList::Find(kActiveStudyName);
   if (!field_trial) {
     return group_name;
   }
@@ -50,27 +41,26 @@ std::string GetPageProbabilitiesFieldTrialGroup() {
   return group_name;
 }
 
-int GetPageProbabilitiesHistorySize() {
-  return GetFieldTrialParamByFeatureAsInt(
-      kContextualAdsControl,
-      "page_probabilities_history_size",
-      kDefaultHistorySize);
-}
-
-void LogPageProbabilitiesStudy() {
-  std::string log;
-  if (!IsPageProbabilitiesStudyActive()) {
-    BLOG(1, "No active experiment");
+// TODO(Moritz Haller): Maybe not pull out into features_logging.cc
+void Log() {
+  if (!HasActiveStudy()) {
+    BLOG(1, "No active study found");
   } else {
-    const std::string study = GetPageProbabilitiesStudy();
-    const std::string group = GetPageProbabilitiesFieldTrialGroup();
-    const std::string history_size =
-        base::NumberToString(GetPageProbabilitiesHistorySize());
+    const std::string study = GetStudy();
+    const std::string group = GetGroup();
+    BLOG(1, "Running study " << study << " with group " << group);
+  }
 
-    BLOG(1, "Running active experiment:\n"
-      << "  name: " << study << "\n"
-      << "  group: " << group << "\n"
-      << "  value: " << history_size);
+  if (IsTextClassificationEnabled()) {
+    BLOG(1, "Text Classification enabled");
+  } else {
+    BLOG(1, "Text Classification disabled");
+  }
+
+  if (IsPurchaseIntentEnabled()) {
+    BLOG(1, "Purchase Intent enabled");
+  } else {
+    BLOG(1, "Purchase Intent disabled");
   }
 }
 

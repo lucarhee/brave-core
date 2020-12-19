@@ -506,7 +506,7 @@ void AdsImpl::InitializeStep6(
 
   ad_server_->MaybeFetch();
 
-  features::LogPageProbabilitiesStudy();
+  features::Log();
 
   MaybeServeAdNotificationsAtRegularIntervals();
 }

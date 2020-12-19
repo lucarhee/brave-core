@@ -7,6 +7,8 @@
 
 #include "bat/ads/internal/ad_serving/ad_targeting/models/text_classification/text_classification_model.h"
 #include "bat/ads/internal/ad_serving/ad_targeting/models/purchase_intent/purchase_intent_model.h"
+#include "bat/ads/internal/features/purchase_intent/purchase_intent_features.h"
+#include "bat/ads/internal/features/text_classification/text_classification_features.h"
 
 namespace ads {
 
@@ -29,10 +31,17 @@ AdTargeting::AdTargeting() = default;
 AdTargeting::~AdTargeting() = default;
 
 SegmentList AdTargeting::GetSegments() const {
-  const SegmentList text_classification_segments =
-      GetTextClassificationSegments();
+  // Enabled by default
+  SegmentList text_classification_segments;
+  if (features::IsTextClassificationEnabled()) {
+    text_classification_segments = GetTextClassificationSegments();
+  }
 
-  const SegmentList purchase_intent_segments = GetPurchaseIntentSegments();
+  // Enabled by default
+  SegmentList purchase_intent_segments;
+  if (features::IsPurchaseIntentEnabled()) {
+    purchase_intent_segments = GetPurchaseIntentSegments();
+  }
 
   SegmentList segments = text_classification_segments;
   segments.insert(segments.end(), purchase_intent_segments.begin(),

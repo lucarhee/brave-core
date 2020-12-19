@@ -14,6 +14,7 @@
 #include "bat/ads/internal/ad_serving/ad_targeting/models/purchase_intent/purchase_intent_model_values.h"
 #include "bat/ads/internal/ad_targeting/data_types/purchase_intent/purchase_intent_aliases.h"
 #include "bat/ads/internal/client/client.h"
+#include "bat/ads/internal/features/purchase_intent/purchase_intent_features.h"
 
 namespace ads {
 namespace ad_targeting {
@@ -25,10 +26,12 @@ uint16_t CalculateScoreForHistory(
     const PurchaseIntentSignalHistoryList& history) {
   uint16_t score = 0;
 
+  int64_t time_window_in_seconds =
+      features::GetPurchaseIntentTimeWindowInSeconds();
   for (const auto& signal_segment : history) {
     const base::Time signal_decayed_time =
         base::Time::FromDoubleT(signal_segment.timestamp_in_seconds) +
-            base::TimeDelta::FromSeconds(kTimeWindowInSeconds);
+            base::TimeDelta::FromSeconds(time_window_in_seconds);
 
     const base::Time now = base::Time::Now();
 
@@ -64,9 +67,10 @@ SegmentList PurchaseIntent::GetSegments() const {
     scores.insert(std::make_pair(score, segment_history.first));
   }
 
+  uint16_t threshold = features::GetPurchaseIntentTreshold();
   std::multimap<uint16_t, std::string>::reverse_iterator iter;
   for (iter = scores.rbegin(); iter != scores.rend(); ++iter) {
-    if (iter->first >= kThreshold) {
+    if (iter->first >= threshold) {
       segments.push_back(iter->second);
     }
 
