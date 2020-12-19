@@ -5,8 +5,10 @@
 
 #include "bat/ads/internal/ad_targeting/ad_targeting.h"
 
+#include "bat/ads/internal/ad_serving/ad_targeting/models/bandits/epsilon_greedy_bandit_model.h"
 #include "bat/ads/internal/ad_serving/ad_targeting/models/text_classification/text_classification_model.h"
 #include "bat/ads/internal/ad_serving/ad_targeting/models/purchase_intent/purchase_intent_model.h"
+#include "bat/ads/internal/features/bandits/epsilon_greedy_bandit_features.h"
 #include "bat/ads/internal/features/purchase_intent/purchase_intent_features.h"
 #include "bat/ads/internal/features/text_classification/text_classification_features.h"
 
@@ -16,6 +18,11 @@ namespace {
 
 SegmentList GetTextClassificationSegments() {
   ad_targeting::model::TextClassification model;
+  return model.GetSegments();
+}
+
+SegmentList GetEpsilonGreedyBanditSegments() {
+  ad_targeting::model::EpsilonGreedyBandit model;
   return model.GetSegments();
 }
 
@@ -43,9 +50,17 @@ SegmentList AdTargeting::GetSegments() const {
     purchase_intent_segments = GetPurchaseIntentSegments();
   }
 
+  // Disabled by default
+  SegmentList epsilon_greedy_segments;
+  if (features::IsEpsilonGreedyBanditEnabled()) {
+    epsilon_greedy_segments = GetEpsilonGreedyBanditSegments();
+  }
+
   SegmentList segments = text_classification_segments;
   segments.insert(segments.end(), purchase_intent_segments.begin(),
       purchase_intent_segments.end());
+  segments.insert(segments.end(), epsilon_greedy_segments.begin(),
+      epsilon_greedy_segments.end());
 
   return segments;
 }

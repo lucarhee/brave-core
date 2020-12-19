@@ -23,6 +23,7 @@
 #include "bat/ads/internal/ad_targeting/data_types/purchase_intent/purchase_intent_components.h"
 #include "bat/ads/internal/ad_targeting/data_types/text_classification/text_classification_components.h"
 #include "bat/ads/internal/ad_targeting/geographic/subdivision/subdivision_targeting.h"
+#include "bat/ads/internal/ad_targeting/processors/bandits/epsilon_greedy_bandit_processor.h"
 #include "bat/ads/internal/ad_targeting/processors/purchase_intent/purchase_intent_processor.h"
 #include "bat/ads/internal/ad_targeting/processors/text_classification/text_classification_processor.h"
 #include "bat/ads/internal/ad_targeting/resources/purchase_intent/purchase_intent_resource.h"
@@ -394,6 +395,8 @@ void AdsImpl::set(
   purchase_intent_processor_ =
       std::make_unique<ad_targeting::processor::PurchaseIntent>(
           purchase_intent_resource_.get());
+  epsilon_greedy_bandit_processor_ =
+      std::make_unique<ad_targeting::processor::EpsilonGreedyBandit>();
 
   ad_targeting_ = std::make_unique<AdTargeting>();
   subdivision_targeting_ =
@@ -569,11 +572,23 @@ void AdsImpl::OnAdNotificationClicked(
   ad_transfer_->set_last_clicked_ad(ad);
 
   account_->Deposit(ad.creative_instance_id, ConfirmationType::kClicked);
+
+  epsilon_greedy_bandit_processor_->Process({ad.segment,
+      ads::AdNotificationEventType::kClicked});
 }
 
 void AdsImpl::OnAdNotificationDismissed(
     const AdNotificationInfo& ad) {
   account_->Deposit(ad.creative_instance_id, ConfirmationType::kDismissed);
+
+  epsilon_greedy_bandit_processor_->Process({ad.segment,
+      ads::AdNotificationEventType::kDismissed});
+}
+
+void AdsImpl::OnAdNotificationTimedOut(
+    const AdNotificationInfo& ad) {
+  epsilon_greedy_bandit_processor_->Process({ad.segment,
+      ads::AdNotificationEventType::kTimedOut});
 }
 
 void AdsImpl::OnCatalogUpdated(

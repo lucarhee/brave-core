@@ -3,10 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef BAT_ADS_INTERNAL_FEATURES_PURCHASE_INTENT_PURCHASE_INTENT_FEATURES_H_
-#define BAT_ADS_INTERNAL_FEATURES_PURCHASE_INTENT_PURCHASE_INTENT_FEATURES_H_
-
-#include <stdint.h>
+#ifndef BAT_ADS_INTERNAL_FEATURES_BANDITS_EPSILON_GREEDY_BANDIT_FEATURES_H_
+#define BAT_ADS_INTERNAL_FEATURES_BANDITS_EPSILON_GREEDY_BANDIT_FEATURES_H_
 
 #include "base/feature_list.h"
 
@@ -14,15 +12,13 @@ namespace ads {
 namespace features {
 
 // TODO(Moritz Haller): Feature description
-extern const base::Feature kPurchaseIntent;
+extern const base::Feature kEpsilonGreedyBandit;
 
-bool IsPurchaseIntentEnabled();
+bool IsEpsilonGreedyBanditEnabled();
 
-uint16_t GetPurchaseIntentTreshold();
-
-int64_t GetPurchaseIntentTimeWindowInSeconds();
+uint16_t GetEpsilonGreedyBanditEpsilon();
 
 }  // namespace features
 }  // namespace ads
 
-#endif  // BAT_ADS_INTERNAL_FEATURES_PURCHASE_INTENT_PURCHASE_INTENT_FEATURES_H_
+#endif  // BAT_ADS_INTERNAL_FEATURES_BANDITS_EPSILON_GREEDY_BANDIT_FEATURES_H_

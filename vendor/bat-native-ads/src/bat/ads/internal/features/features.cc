@@ -4,6 +4,7 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "bat/ads/internal/features/features.h"
+#include "bat/ads/internal/features/bandits/epsilon_greedy_bandit_features.h"
 #include "bat/ads/internal/features/purchase_intent/purchase_intent_features.h"
 #include "bat/ads/internal/features/text_classification/text_classification_features.h"
 #include "base/metrics/field_trial.h"
@@ -55,6 +56,12 @@ void Log() {
     BLOG(1, "Text Classification enabled");
   } else {
     BLOG(1, "Text Classification disabled");
+  }
+
+  if (IsEpsilonGreedyBanditEnabled()) {
+    BLOG(1, "Epsilon Greedy Bandit enabled");
+  } else {
+    BLOG(1, "Epsilon Greedy Bandit disabled");
   }
 
   if (IsPurchaseIntentEnabled()) {
